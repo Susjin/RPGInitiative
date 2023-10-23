@@ -17,14 +17,24 @@ local Menu = require "RPGInitiativeMenu"
 
 local pairs = pairs
 
+function RPGInitiative:MenuActions()
+    ::start::
+    local option = Menu.createMenu()
 
+    if option == "start" then
 
-function RPGInitiative:setRollValue()
-    for i, player in pairs(self.playerCharacters) do
-        
-    end
-    for i, npc in pairs(self.npcCharacters) do
+    elseif option == "savePlayers" then
 
+    elseif option == "loadPlayers" then
+
+    elseif option == "saveAll" then
+
+    elseif option == "loadAll" then
+
+    elseif option == "quit" then
+        os.exit()
+    elseif option == "wrong" then
+        goto start
     end
 end
 
