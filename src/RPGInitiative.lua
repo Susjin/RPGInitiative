@@ -18,24 +18,20 @@ local Menu = require "RPGInitiativeMenu"
 local pairs = pairs
 
 function RPGInitiative:MenuActions()
-    ::start::
-    local option = Menu.createMenu()
+    local option
 
-    if option == "start" then
+    repeat
+        option = Menu.createMenu()
+        if option == "start" then
 
-    elseif option == "savePlayers" then
+        elseif option == "saveAll" then
 
-    elseif option == "loadPlayers" then
+        elseif option == "loadAll" then
 
-    elseif option == "saveAll" then
-
-    elseif option == "loadAll" then
-
-    elseif option == "quit" then
-        os.exit()
-    elseif option == "wrong" then
-        goto start
-    end
+        elseif option == "quit" then
+            os.exit()
+        end
+    until option == "quit"
 end
 
 function RPGInitiative:new(diceType, playerCharacters, npcCharacters)
@@ -49,5 +45,18 @@ function RPGInitiative:new(diceType, playerCharacters, npcCharacters)
     o.orderList = {}
 end
 
+--[[Menu.saveAll({{name = "Jake Holt", class = "Shooter"}, {name = "Mando Christmas", class = "Thief"}, {name = "Jihen Crown", class = "Medic"}}, {{name = "Naga", class = "Boss"}})
+print("writted")
+local tbl1, tbl2 = Menu.loadAll()
+
+for i, player in pairs(tbl1) do
+    print(string.format("ID: %d\nName: %s\nClass: %s\n\n", i, player.name, player.class))
+end
+
+for i, npc in pairs(tbl2) do
+    print(string.format("ID: %d\nName: %s\nClass: %s\n\n", i, npc.name, npc.class))
+end]]
+
+
 ------------------ Returning file for 'require' ------------------
-return RPGInitiative
+--return RPGInitiative

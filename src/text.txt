@@ -1,0 +1,2 @@
+playerData{|id:1,name:Jake Holt,class:Shooter,|id:2,name:Mando Christmas,class:Thief,|id:3,name:Jihen Crown,class:Medic,}
+NPCData{|id:1,name:Naga,class:Boss,}
