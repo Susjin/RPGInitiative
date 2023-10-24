@@ -14,6 +14,7 @@ local RPGInitiative = {}
 ----------------------------------------------------------------------------------------------
 --Setting up locals
 local Menu = require "RPGInitiativeMenu"
+local Lists = require "ListUtils"
 
 local pairs = pairs
 
@@ -57,6 +58,8 @@ for i, npc in pairs(tbl2) do
     print(string.format("ID: %d\nName: %s\nClass: %s\n\n", i, npc.name, npc.class))
 end]]
 
+--io.stdout:setvbuf('no')
+--RPGInitiative:MenuActions()
 
 ------------------ Returning file for 'require' ------------------
 --return RPGInitiative

@@ -34,6 +34,7 @@ function RPGInitiativeMenu.saveAll(playersTable, npcsTable)
         file:write(string.format("|id:%d,name:%s,class:%s,", i, npc.name, npc.class))
     end
     file:write("}")
+    file:flush()
     file:close()
 end
 
@@ -82,12 +83,12 @@ function RPGInitiativeMenu.loadAll()
 end
 
 function RPGInitiativeMenu.createMenu()
-    print(string.format("Welcome to RPGInitiative!\n\n"))
-    print(string.format("1. Start game\n2. Load from file\n"))
-    print(string.format("3. Save to file\n4. Quit"))
-    print(string.format("\nPlease select your option: "))
+    io.write(string.format("Welcome to RPGInitiative!\n\n"))
+    io.write(string.format("1. Start game\n2. Load from file\n"))
+    io.write(string.format("3. Save to file\n4. Quit"))
+    io.write(string.format("\nPlease select your option: "))
 
-    local option = io.read("n")
+    local option = io.stdin:read("*n")
     if option > 4 or option < 1 then option = 5 end
     return options[option]
 end
