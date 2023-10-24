@@ -6,6 +6,9 @@
 
 --- Main file with all functions related to PLACEHOLDER
 --- @class ListUtils
+--- @field first number
+--- @field last number
+--- @field current boolean
 local ListUtils = {}
 ----------------------------------------------------------------------------------------------
 
@@ -39,6 +42,26 @@ function ListUtils:popRight()
     return value
 end
 
+function ListUtils:peekLeft()
+    return self[self.first]
+end
+
+function ListUtils:peekRight()
+    return self[self.last]
+end
+
+function ListUtils:wipe()
+    self = ListUtils:new()
+end
+
+function ListUtils:length()
+    return (self.last - self.first) + 1
+end
+
+function ListUtils:empty()
+    return self:length() == 0
+end
+
 function ListUtils:new ()
     local o = {}
     setmetatable(o, self)
@@ -46,6 +69,7 @@ function ListUtils:new ()
 
     o.first = 0
     o.last = -1
+    o.current = false
     return o
 end
 

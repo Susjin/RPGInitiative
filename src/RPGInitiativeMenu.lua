@@ -24,14 +24,14 @@ local options = {
 function RPGInitiativeMenu.saveAll(playersTable, npcsTable)
     local file = io.open("text.txt", "w")
     file:write("playerData{")
-    for i, player in pairs(playersTable) do
-        file:write(string.format("|id:%d,name:%s,class:%s,", i, player.name, player.class))
+    for _, player in pairs(playersTable) do
+        file:write(string.format("|id:%d,name:%s,class:%s,", player.id, player.name, player.class))
     end
     file:write(string.format("}\n"))
 
     file:write("NPCData{")
-    for i, npc in pairs(npcsTable) do
-        file:write(string.format("|id:%d,name:%s,class:%s,", i, npc.name, npc.class))
+    for _, npc in pairs(npcsTable) do
+        file:write(string.format("|id:%d,name:%s,class:%s,", npc.id, npc.name, npc.class))
     end
     file:write("}")
     file:flush()
@@ -43,6 +43,7 @@ function RPGInitiativeMenu.loadAll()
     local str = file:read("*all")
     local players = {}
     local npcs = {}
+    local totalIDs = 0
 
     local playerPos1 = string.find(str, "playerData{"); local playerPos2 = string.find(str, "}", playerPos1)
     local playerData = string.sub(str, playerPos1, playerPos2)
@@ -52,12 +53,13 @@ function RPGInitiativeMenu.loadAll()
         if not string.find(data, "playerData{") then
             local pos1, pos2
             pos1 = string.find(data, "id:"); pos2 = string.find(data, ",", pos1)
-            local id = tonumber(string.sub(data, pos1+3, pos2-1))
+            local _ = tonumber(string.sub(data, pos1+3, pos2-1))
             pos1 = string.find(data, "name:"); pos2 = string.find(data, ",", pos1)
             local name = string.sub(data, pos1+5, pos2-1)
             pos1 = string.find(data, "class:"); pos2 = string.find(data, ",", pos1)
             local class = string.sub(data, pos1+6, pos2-1)
-            players[id] = {name = name, class = class}
+            table.insert(players, {id = totalIDs + 1, name = name, class = class})
+            totalIDs = totalIDs + 1
         end
     end
 
@@ -69,21 +71,23 @@ function RPGInitiativeMenu.loadAll()
         if not string.find(data, "NPCData{") then
             local pos1, pos2
             pos1 = string.find(data, "id:"); pos2 = string.find(data, ",", pos1)
-            local id = tonumber(string.sub(data, pos1+3, pos2-1))
+            local _ = tonumber(string.sub(data, pos1+3, pos2-1))
             pos1 = string.find(data, "name:"); pos2 = string.find(data, ",", pos1)
             local name = string.sub(data, pos1+5, pos2-1)
             pos1 = string.find(data, "class:"); pos2 = string.find(data, ",", pos1)
             local class = string.sub(data, pos1+6, pos2-1)
-            npcs[id] = {name = name, class = class}
+            table.insert(npcs, {id = totalIDs + 1, name = name, class = class})
+            totalIDs = totalIDs + 1
         end
     end
 
     file:close()
-    return players, npcs
+    return players, npcs, totalIDs
 end
 
 function RPGInitiativeMenu.createMenu()
-    io.write(string.format("Welcome to RPGInitiative!\n\n"))
+    os.execute("cls")
+    io.write(string.format("\n\nWelcome to RPGInitiative!\n\n"))
     io.write(string.format("1. Start game\n2. Load from file\n"))
     io.write(string.format("3. Save to file\n4. Quit"))
     io.write(string.format("\nPlease select your option: "))
