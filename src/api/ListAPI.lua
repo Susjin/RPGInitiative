@@ -5,26 +5,32 @@
 --- GitHub Repository: https://github.com/Susjin/RPGInitiative
 
 --- Main file with all functions related to PLACEHOLDER
---- @class ListUtils
+--- @class ListAPI
 --- @field first number
 --- @field last number
 --- @field current boolean
-local ListUtils = {}
+local ListAPI = {}
 ----------------------------------------------------------------------------------------------
 
-function ListUtils:pushLeft(value)
+---Push a given value to the start on the list
+---@param value any Value to be inserted
+function ListAPI:pushLeft(value)
     local first = self.first - 1
     self.first = first
     self[first] = value
 end
 
-function ListUtils:pushRight(value)
+---Push a given value to the end of the list
+---@param value any Value to be inserted
+function ListAPI:pushRight(value)
     local last = self.last + 1
     self.last = last
     self[last] = value
 end
 
-function ListUtils:popLeft()
+---Removes the value on the start of the list
+---@return any Value removed
+function ListAPI:popLeft()
     local first = self.first
     if first > self.last then error("list is empty") end
     local value = self[first]
@@ -33,7 +39,9 @@ function ListUtils:popLeft()
     return value
 end
 
-function ListUtils:popRight()
+---Removes the value on the end of the list
+---@return any Value removed
+function ListAPI:popRight()
     local last = self.last
     if self.first > last then error("list is empty") end
     local value = self[last]
@@ -42,27 +50,38 @@ function ListUtils:popRight()
     return value
 end
 
-function ListUtils:peekLeft()
+---Gets the value on the start of the list without removing it.
+---@return any Value got
+function ListAPI:peekLeft()
     return self[self.first]
 end
 
-function ListUtils:peekRight()
+---Gets the value on the end of the list without removing it.
+---@return any Value got
+function ListAPI:peekRight()
     return self[self.last]
 end
 
-function ListUtils:wipe()
-    self = ListUtils:new()
+---Clears the whole list
+function ListAPI:wipe()
+    self = ListAPI:new()
 end
 
-function ListUtils:length()
+---Gets the current length of the list
+---@return number Current length
+function ListAPI:length()
     return (self.last - self.first) + 1
 end
 
-function ListUtils:empty()
+---Checks if the list is empty
+---@return boolean True if empty, false if not
+function ListAPI:empty()
     return self:length() == 0
 end
 
-function ListUtils:new ()
+---Creates a new list
+---@return ListAPI
+function ListAPI:new()
     local o = {}
     setmetatable(o, self)
     self.__index = self
@@ -75,4 +94,4 @@ end
 
 
 ------------------ Returning file for 'require' ------------------
-return ListUtils
+return ListAPI

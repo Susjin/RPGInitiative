@@ -9,7 +9,7 @@
 local RPGInitiativeMenu = {}
 ----------------------------------------------------------------------------------------------
 --Setting up locals
-local StringUtils = require "StringUtils"
+local StringUtils = require "api.StringUtils"
 local pairs = pairs
 
 
@@ -21,16 +21,19 @@ local options = {
     "wrong"
 }
 
-function RPGInitiativeMenu.saveAll(playersTable, npcsTable)
+---Saves all characters to a file
+---@param playerTable Character[] Table with all players
+---@param NPCTable Character[] Table with all NPCs
+function RPGInitiativeMenu.saveAll(playerTable, NPCTable)
     local file = io.open("text.txt", "w")
     file:write("playerData{")
-    for _, player in pairs(playersTable) do
+    for _, player in pairs(playerTable) do
         file:write(string.format("|id:%d,name:%s,class:%s,", player.id, player.name, player.class))
     end
     file:write(string.format("}\n"))
 
     file:write("NPCData{")
-    for _, npc in pairs(npcsTable) do
+    for _, npc in pairs(NPCTable) do
         file:write(string.format("|id:%d,name:%s,class:%s,", npc.id, npc.name, npc.class))
     end
     file:write("}")
@@ -38,6 +41,8 @@ function RPGInitiativeMenu.saveAll(playersTable, npcsTable)
     file:close()
 end
 
+---Loads all characters from the saved file
+---@return Character[], Character[], number PlayerTable, NPCTable and the TotalIDS respectively
 function RPGInitiativeMenu.loadAll()
     local file = io.open("text.txt", "r")
     local str = file:read("*all")
@@ -85,6 +90,8 @@ function RPGInitiativeMenu.loadAll()
     return players, npcs, totalIDs
 end
 
+---Creates the main menu for the program
+---@return string Option selected
 function RPGInitiativeMenu.createMenu()
     os.execute("cls")
     io.write(string.format("\n\nWelcome to RPGInitiative!\n\n"))

@@ -8,8 +8,8 @@
 --- @class RPGInitiative
 --- @field playerCharacters Character[]
 --- @field npcCharacters Character[]
---- @field list1 ListUtils
---- @field list2 ListUtils
+--- @field list1 ListAPI
+--- @field list2 ListAPI
 local RPGInitiative = {}
 ----------------------------------------------------------------------------------------------
 --Setting up classes
@@ -22,7 +22,7 @@ local RPGInitiative = {}
 --Setting up locals
 local Menu = require "RPGInitiativeMenu"
 local Game = require "RPGInitiativeGame"
-local Lists = require "ListUtils"
+local ListAPI = require "api.ListAPI"
 
 local pairs = pairs
 
@@ -74,8 +74,8 @@ function RPGInitiative:new()
 
     o.playerCharacters = {}
     o.npcCharacters = {}
-    o.list1 = Lists:new()
-    o.list2 = Lists:new()
+    o.list1 = ListAPI:new()
+    o.list2 = ListAPI:new()
 
     return o
 end
