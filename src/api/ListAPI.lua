@@ -64,7 +64,9 @@ end
 
 ---Clears the whole list
 function ListAPI:wipe()
-    self = ListAPI:new()
+    self.first = 0
+    self.last = -1
+    self.current = false
 end
 
 ---Gets the current length of the list

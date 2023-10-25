@@ -25,7 +25,6 @@ local Menu = require "RPGInitiativeMenu"
 local Game = require "RPGInitiativeGame"
 local ListAPI = require "api.ListAPI"
 
-local pairs = pairs
 local clock = os.clock
 
 ---Sleeps the program
@@ -92,7 +91,7 @@ function RPGInitiative:inGameActions()
             io.stdout:write(string.format("\nNPC removed!"))
             sleep(1)
         elseif option == "reset" then
-            Game.resetRolls(self.playerCharacters, self.npcCharacters, self.list1, self.list2)
+            self.list1, self.list2 = Game.resetRolls(self.playerCharacters, self.npcCharacters, self.list1, self.list2)
             io.stdout:write(string.format("\nRolls cleared!"))
             sleep(1)
         elseif option == "wrong" then

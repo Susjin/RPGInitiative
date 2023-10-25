@@ -24,6 +24,14 @@ local options = {
     "wrong"
 }
 
+local function printListTable(listTable, tableName)
+    io.stdout:write(string.format("%s: {\n", tableName))
+    for i , id in pairs(listTable) do
+        io.stdout:write(string.format("\t'%s': %s,\n", tostring(i), tostring(id)))
+    end
+    io.stdout:write(string.format("}\n\n"))
+end
+
 local function printCharacterTable(charTable, tableName)
     io.stdout:write(string.format("%s: {\n", tableName))
     for i , char in pairs(charTable) do
@@ -59,11 +67,11 @@ function RPGInitiativeGame.printOrder(playerTable, NPCTable, list1, list2)
     for _, char in pairs(total) do
         if char.id == currentID then
             io.stdout:write(string.format(">>> %s", char.name))
-            for i=1, 20-string.len(char.name) do io.stdout:write(" ") end
+            for _=1, 20-string.len(char.name) do io.stdout:write(" ") end
             io.stdout:write(string.format(" Class: %s\n", char.class))
         else
             io.stdout:write(string.format("    %s", char.name))
-            for i=1, 20-string.len(char.name) do io.stdout:write(" ") end
+            for _=1, 20-string.len(char.name) do io.stdout:write(" ") end
             io.stdout:write(string.format(" Class: %s\n", char.class))
         end
     end
@@ -122,7 +130,6 @@ function RPGInitiativeGame.calculateOrder(playerTable, NPCTable, list1)
     for _, data in pairs(NPCTable) do table.insert(total, {id = data.id, name = data.name, roll = data.roll}) end
     --Calculating each character turn
     while #total > 0 do
-        printCharacterTable(total, "TotalTable")
         local minor = 99
         local minorPos = 0
         for i, char in pairs(total) do
@@ -156,12 +163,13 @@ function RPGInitiativeGame.passTurn(list1, list2)
         list2:pushRight(list1:popRight())
         --Switching currently list if empty
         if list1:empty() then list1.current = false; list2.current = true; end
-    end
-    if list2.current == true then
+    elseif list2.current == true then
         list1:pushLeft(list2:popLeft())
         --Switching currently list if empty
         if list2:empty() then list2.current = false; list1.current = true; end
     end
+    printListTable(list1, "List1")
+    printListTable(list2, "List2")
 end
 
 ---Adds a Player to the Player characters table
@@ -184,7 +192,7 @@ end
 ---@param playerTable Character[]
 function RPGInitiativeGame.removePlayer(playerTable)
     os.execute("cls")
-    local name, foundPos = 0
+    local name; local foundPos = 0
 
     --Repeat until player name is found, avoid errors when inserting wrong name
     repeat
@@ -257,8 +265,9 @@ function RPGInitiativeGame.resetRolls(playerTable, NPCTable, list1, list2)
             npc.roll = nil
         end
     end
-    if not list1:empty() then list1:wipe() end
-    if not list2:empty() then list2:wipe() end
+    list1:wipe()
+    list2:wipe()
+    return list1, list2
 end
 
 ------------------ Returning file for 'require' ------------------
