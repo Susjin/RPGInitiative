@@ -21,6 +21,20 @@ local options = {
     "wrong"
 }
 
+---Creates the main menu for the program
+---@return string Option selected
+function RPGInitiativeMenu.createMenu()
+    os.execute("cls")
+    io.write(string.format("\n\n----------- Welcome to RPGInitiative! -----------\n\n"))
+    io.write(string.format("1. Start game\n2. Load from file\n"))
+    io.write(string.format("3. Save to file\n4. Quit"))
+    io.write(string.format("\nPlease select your option: "))
+
+    local option = io.stdin:read("*n")
+    if option > 4 or option < 1 then option = 5 end
+    return options[option]
+end
+
 ---Saves all characters to a file
 ---@param playerTable Character[] Table with all players
 ---@param NPCTable Character[] Table with all NPCs
@@ -88,20 +102,6 @@ function RPGInitiativeMenu.loadAll()
 
     file:close()
     return players, npcs, totalIDs
-end
-
----Creates the main menu for the program
----@return string Option selected
-function RPGInitiativeMenu.createMenu()
-    os.execute("cls")
-    io.write(string.format("\n\nWelcome to RPGInitiative!\n\n"))
-    io.write(string.format("1. Start game\n2. Load from file\n"))
-    io.write(string.format("3. Save to file\n4. Quit"))
-    io.write(string.format("\nPlease select your option: "))
-
-    local option = io.stdin:read("*n")
-    if option > 4 or option < 1 then option = 5 end
-    return options[option]
 end
 
 ------------------ Returning file for 'require' ------------------

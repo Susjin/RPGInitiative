@@ -10,6 +10,7 @@
 --- @field npcCharacters Character[]
 --- @field list1 ListAPI
 --- @field list2 ListAPI
+--- @field totalIDs number
 local RPGInitiative = {}
 ----------------------------------------------------------------------------------------------
 --Setting up classes
@@ -25,7 +26,15 @@ local Game = require "RPGInitiativeGame"
 local ListAPI = require "api.ListAPI"
 
 local pairs = pairs
+local clock = os.clock
 
+---Sleeps the program
+---@param n number Seconds to sleep
+local function sleep(n)
+    local t0 = clock()
+    local t
+    while clock() - t0 <= n do t=1 end
+end
 
 
 function RPGInitiative:menuActions()
@@ -33,13 +42,18 @@ function RPGInitiative:menuActions()
     repeat
         option = Menu.createMenu()
         if option == "start" then
-
+            self:inGameActions()
         elseif option == "saveAll" then
-
+            Menu.saveAll(self.playerCharacters, self.npcCharacters)
+            io.stdout:write(string.format("\nFully saved all characters!"))
+            sleep(1)
         elseif option == "loadAll" then
-
-        elseif option == "back" then
-
+            self.playerCharacters, self.npcCharacters, self.totalIDs = Menu.loadAll()
+            io.stdout:write(string.format("\nFully loaded all characters!"))
+            sleep(1)
+        elseif option == "wrong" then
+            io.stdout:write(string.format("\nWrong option!"))
+            sleep(1)
         end
     until option == "quit"
     os.exit()
@@ -48,21 +62,42 @@ end
 function RPGInitiative:inGameActions()
     local option
     repeat
+        Game.printOrder(self.playerCharacters, self.npcCharacters, self.list1, self.list2)
         option = Game.doMenu()
         if option == "roll" then
-
+            Game.rollInitiative(self.playerCharacters, self.npcCharacters)
+            io.stdout:write(string.format("\nCharacter rolls added!"))
+            sleep(1)
         elseif option == "calculate" then
-
+            Game.calculateOrder(self.playerCharacters, self.npcCharacters, self.list1)
+            io.stdout:write(string.format("\nPlay Turn order calculated!"))
+            sleep(1)
+        elseif option == "pass" then
+            Game.passTurn(self.list1, self.list2)
+            io.stdout:write(string.format("\nPlay Turn passed!"))
         elseif option == "addPlayer" then
-
+            Game.addPlayer(self.playerCharacters, self.totalIDs)
+            io.stdout:write(string.format("\nPlayer added!"))
+            sleep(1)
         elseif option == "removePlayer" then
-
+            Game.removePlayer(self.playerCharacters)
+            io.stdout:write(string.format("\nPlayer removed!"))
+            sleep(1)
         elseif option == "addNPC" then
-
+            Game.addNPC(self.npcCharacters, self.totalIDs)
+            io.stdout:write(string.format("\nNPC added!"))
+            sleep(1)
         elseif option == "removeNPC" then
-
+            Game.removeNPC(self.npcCharacters)
+            io.stdout:write(string.format("\nNPC removed!"))
+            sleep(1)
+        elseif option == "reset" then
+            Game.resetRolls(self.playerCharacters, self.npcCharacters, self.list1, self.list2)
+            io.stdout:write(string.format("\nRolls cleared!"))
+            sleep(1)
         elseif option == "wrong" then
-
+            io.stdout:write(string.format("\nWrong option!"))
+            sleep(1)
         end
     until option == "back"
 end
@@ -79,6 +114,21 @@ function RPGInitiative:new()
 
     return o
 end
+
+
+
+io.stdout:setvbuf('no')
+local game = RPGInitiative:new()
+game:menuActions()
+
+
+
+
+
+
+
+
+
 
 --[[Menu.saveAll({{name = "Jake Holt", class = "Shooter"}, {name = "Mando Christmas", class = "Thief"}, {name = "Jihen Crown", class = "Medic"}}, {{name = "Naga", class = "Boss"}})
 print("writted")
