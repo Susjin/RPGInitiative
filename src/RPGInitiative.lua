@@ -68,32 +68,40 @@ function RPGInitiative:inGameActions()
             io.stdout:write(string.format("\nCharacter rolls added!"))
             sleep(1)
         elseif option == "calculate" then
-            Game.calculateOrder(self.playerCharacters, self.npcCharacters, self.list1)
+            Game.calculateOrder(self.playerCharacters, self.npcCharacters, self.list1, self.list2)
             io.stdout:write(string.format("\nPlay Turn order calculated!"))
             sleep(1)
         elseif option == "pass" then
             Game.passTurn(self.list1, self.list2)
             io.stdout:write(string.format("\nPlay Turn passed!"))
+        elseif option == "endFight" then
+            self.list1, self.list2 = Game.finishFight(self.playerCharacters, self.npcCharacters, self.list1, self.list2)
+            io.stdout:write(string.format("\nThe fight is finished!"))
+            sleep(1)
         elseif option == "addPlayer" then
-            Game.addPlayer(self.playerCharacters, self.totalIDs)
-            io.stdout:write(string.format("\nPlayer added!"))
+            if Game.addPlayer(self.playerCharacters, self.totalIDs) then
+                self.totalIDs = self.totalIDs + 1
+            else
+            io.stdout:write(string.format("\nCanceled!"))
             sleep(1)
+            end
         elseif option == "removePlayer" then
-            Game.removePlayer(self.playerCharacters)
-            io.stdout:write(string.format("\nPlayer removed!"))
-            sleep(1)
+            if not Game.removePlayer(self.playerCharacters, self.npcCharacters, self.list1, self.list2) then
+                io.stdout:write(string.format("\nCanceled!"))
+                sleep(1)
+            end
         elseif option == "addNPC" then
-            Game.addNPC(self.npcCharacters, self.totalIDs)
-            io.stdout:write(string.format("\nNPC added!"))
+            if Game.addNPC(self.npcCharacters, self.totalIDs) then
+                self.totalIDs = self.totalIDs + 1
+            else
+            io.stdout:write(string.format("\nCanceled!"))
             sleep(1)
+            end
         elseif option == "removeNPC" then
-            Game.removeNPC(self.npcCharacters)
-            io.stdout:write(string.format("\nNPC removed!"))
-            sleep(1)
-        elseif option == "reset" then
-            self.list1, self.list2 = Game.resetRolls(self.playerCharacters, self.npcCharacters, self.list1, self.list2)
-            io.stdout:write(string.format("\nRolls cleared!"))
-            sleep(1)
+            if not Game.removeNPC(self.playerCharacters, self.npcCharacters, self.list1, self.list2) then
+                io.stdout:write(string.format("\nCanceled!"))
+                sleep(1)
+            end
         elseif option == "wrong" then
             io.stdout:write(string.format("\nWrong option!"))
             sleep(1)
@@ -108,6 +116,7 @@ function RPGInitiative:new()
 
     o.playerCharacters = {}
     o.npcCharacters = {}
+    o.totalIDs = 0
     o.list1 = ListAPI:new()
     o.list2 = ListAPI:new()
 
@@ -117,32 +126,22 @@ end
 
 
 io.stdout:setvbuf('no')
+io.stdin:setvbuf('no')
 local game = RPGInitiative:new()
 game:menuActions()
 
 
 
 
+--TODO: List of names when removing
+--TODO: Current roll of each character
+--TODO: Type of character before class
+--TODO:
 
 
 
 
 
-
---[[Menu.saveAll({{name = "Jake Holt", class = "Shooter"}, {name = "Mando Christmas", class = "Thief"}, {name = "Jihen Crown", class = "Medic"}}, {{name = "Naga", class = "Boss"}})
-print("writted")
-local tbl1, tbl2 = Menu.loadAll()
-
-for i, player in pairs(tbl1) do
-    print(string.format("ID: %d\nName: %s\nClass: %s\n\n", i, player.name, player.class))
-end
-
-for i, npc in pairs(tbl2) do
-    print(string.format("ID: %d\nName: %s\nClass: %s\n\n", i, npc.name, npc.class))
-end]]
-
---io.stdout:setvbuf('no')
---RPGInitiative:MenuActions()
 
 ------------------ Returning file for 'require' ------------------
 --return RPGInitiative
