@@ -29,7 +29,7 @@ local clock = os.clock
 
 ---Sleeps the program
 ---@param n number Seconds to sleep
-local function sleep(n)
+function sleep(n)
     local t0 = clock()
     local t
     while clock() - t0 <= n do t=1 end
@@ -44,12 +44,8 @@ function RPGInitiative:menuActions()
             self:inGameActions()
         elseif option == "saveAll" then
             Menu.saveAll(self.playerCharacters, self.npcCharacters)
-            io.stdout:write(string.format("\nFully saved all characters!"))
-            sleep(1)
         elseif option == "loadAll" then
             self.playerCharacters, self.npcCharacters, self.totalIDs = Menu.loadAll()
-            io.stdout:write(string.format("\nFully loaded all characters!"))
-            sleep(1)
         elseif option == "wrong" then
             io.stdout:write(string.format("\nWrong option!"))
             sleep(1)
@@ -124,23 +120,11 @@ function RPGInitiative:new()
 end
 
 
-
+--Main execution
 io.stdout:setvbuf('no')
 io.stdin:setvbuf('no')
 local game = RPGInitiative:new()
 game:menuActions()
-
-
-
-
---TODO: List of names when removing
---TODO: Current roll of each character
---TODO: Type of character before class
---TODO:
-
-
-
-
 
 
 ------------------ Returning file for 'require' ------------------

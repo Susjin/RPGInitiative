@@ -55,22 +55,21 @@ function RPGInitiativeGame.printOrder(playerTable, NPCTable, list1, list2)
 
     --Getting all players list
     local total = {}
-    for _, data in pairs(playerTable) do table.insert(total, {id = data.id, name = data.name, class = data.class}) end
-    for _, data in pairs(NPCTable) do table.insert(total, {id = data.id, name = data.name, class = data.class}) end
+    for _, data in pairs(playerTable) do table.insert(total, {id = data.id, name = data.name, class = data.class, roll = data.roll or 0, type = " Player"}) end
+    for _, data in pairs(NPCTable) do table.insert(total, {id = data.id, name = data.name, class = data.class, roll = data.roll or 0, type = " NPC   "}) end
 
     --Printing
     os.execute("cls")
-    io.stdout:write(string.format("\n\n----------- Turn order -----------\n\n"))
+    io.stdout:write(string.format("\n----------- Turn order -----------\n\n"))
     for _, char in pairs(total) do
         if char.id == currentID then
             io.stdout:write(string.format(">>> %s", char.name))
             for _=1, 20-string.len(char.name) do io.stdout:write(" ") end
-            io.stdout:write(string.format(" Class: %s\n", char.class))
         else
             io.stdout:write(string.format("    %s", char.name))
             for _=1, 20-string.len(char.name) do io.stdout:write(" ") end
-            io.stdout:write(string.format(" Class: %s\n", char.class))
         end
+        io.stdout:write(string.format(" %s | Roll: %02d | Class: %s\n", char.type, char.roll, char.class))
     end
     io.stdout:write(string.format("\n"))
 end
@@ -242,21 +241,25 @@ end
 ---@param list1 ListAPI
 ---@param list2 ListAPI
 function RPGInitiativeGame.removePlayer(playerTable, NPCTable, list1, list2)
-    local name; local foundPos = 0
+    local id; local foundPos = 0
 
     --Repeat until player name is found, avoid errors when inserting wrong name
     repeat
         os.execute("cls")
-        io.stdout:write(string.format("\n----------- Insert player's name for removal | Insert 'cancel' to end operation -----------\n"))
-        io.stdout:write(string.format("Name: ")); name = io.stdin:read()
-        if name == 'cancel' then break end
+        io.stdout:write(string.format("\n----------- Current players list -----------\n"))
+        for _, player in pairs(playerTable) do
+            io.stdout:write(string.format("%d. %s\n", player.id, player.name))
+        end
+        io.stdout:write(string.format("\n----------- Insert player's ID for removal | Insert '0' to end operation -----------\n"))
+        io.stdout:write(string.format("ID: ")); id = tonumber(io.stdin:read())
+        if id == 0 then break end
         for i, player in pairs(playerTable) do
-            if player.name == name then foundPos = i; break; end
+            if player.id == id then foundPos = i; break; end
         end
     until foundPos > 0
-    if name == 'cancel' then return false end
+    if id == 0 then return false end
 
-    io.stdout:write(string.format("Player %s will be removed. Press any key to continue...", name)); io.stdin:read()
+    io.stdout:write(string.format("Player %s will be removed. Press any key to continue...", playerTable[foundPos].name)); io.stdin:read()
     table.remove(playerTable, foundPos)
     if not (list1:empty() and list2:empty()) then RPGInitiativeGame.calculateOrder(playerTable, NPCTable, list1, list2) end
     return true
@@ -288,21 +291,25 @@ end
 ---@param list1 ListAPI
 ---@param list2 ListAPI
 function RPGInitiativeGame.removeNPC(playerTable, NPCTable, list1, list2)
-    local name; local foundPos = 0
+    local id; local foundPos = 0
 
     --Repeat until npc name is found, avoid errors when inserting wrong name
     repeat
         os.execute("cls")
-        io.stdout:write(string.format("\n----------- Insert NPC's name for removal | Insert 'cancel' to end operation -----------\n"))
-        io.stdout:write(string.format("Name: ")); name = io.stdin:read()
-        if name == 'cancel' then break end
+        io.stdout:write(string.format("\n----------- Current NPCs list -----------\n"))
+        for _, npc in pairs(NPCTable) do
+            io.stdout:write(string.format("%d. %s\n", npc.id, npc.name))
+        end
+
+        io.stdout:write(string.format("\n----------- Insert NPC's ID for removal | Insert '0' to end operation -----------\n"))
+        io.stdout:write(string.format("ID: ")); id = tonumber(io.stdin:read())
+        if id == '0' then return false end
         for i, npc in pairs(NPCTable) do
-            if npc.name == name then foundPos = i; break; end
+            if npc.id == id then foundPos = i; break; end
         end
     until foundPos > 0
-    if name == 'cancel' then return false end
 
-    io.stdout:write(string.format("NPC %s will be removed. Press any key to continue...", name)); io.stdin:read()
+    io.stdout:write(string.format("NPC %s will be removed. Press any key to continue...", NPCTable[foundPos].name)); io.stdin:read()
     table.remove(NPCTable, foundPos)
     if not (list1:empty() and list2:empty()) then RPGInitiativeGame.calculateOrder(playerTable, NPCTable, list1, list2) end
     return true

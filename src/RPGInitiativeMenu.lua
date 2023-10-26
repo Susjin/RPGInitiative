@@ -25,7 +25,7 @@ local options = {
 ---@return string Option selected
 function RPGInitiativeMenu.createMenu()
     os.execute("cls")
-    io.write(string.format("\n\n----------- Welcome to RPGInitiative! -----------\n\n"))
+    io.write(string.format("\n----------- Welcome to RPGInitiative! -----------\n\n"))
     io.write(string.format("1. Start game\n2. Load from file\n"))
     io.write(string.format("3. Save to file\n4. Quit"))
     io.write(string.format("\nPlease select your option: "))
@@ -39,7 +39,21 @@ end
 ---@param playerTable Character[] Table with all players
 ---@param NPCTable Character[] Table with all NPCs
 function RPGInitiativeMenu.saveAll(playerTable, NPCTable)
-    local file = io.open("text.txt", "w")
+    --Program is eating one read for some random reason
+    io.stdin:read()
+
+    --Getting the filename from the user
+    local file, filename
+    repeat
+        os.execute("cls")
+        io.stdout:write(string.format("\n----------- Please specify the filename to save | Insert 'cancel' to end operation -----------\n\n"))
+        io.stdout:write(string.format("Filename: ")); filename = io.stdin:read()
+        if filename == 'cancel' then return end
+        file = io.open(filename, "w")
+    until file ~= nil
+
+    io.stdout:write(string.format("\nSaving to file '%s'...", filename))
+    sleep(1)
     file:write("playerData{")
     for _, player in pairs(playerTable) do
         file:write(string.format("|id:%d,name:%s,class:%s,", player.id, player.name, player.class))
@@ -53,12 +67,29 @@ function RPGInitiativeMenu.saveAll(playerTable, NPCTable)
     file:write("}")
     file:flush()
     file:close()
+
+    io.stdout:write(string.format("\nSuccessfully saved to file '%s'!", filename))
+    sleep(0.5)
 end
 
 ---Loads all characters from the saved file
 ---@return Character[], Character[], number PlayerTable, NPCTable and the TotalIDS respectively
 function RPGInitiativeMenu.loadAll()
-    local file = io.open("text.txt", "r")
+    --Program is eating one read for some random reason
+    io.stdin:read()
+
+    --Getting the filename from the user
+    local file, filename
+    repeat
+        os.execute("cls")
+        io.stdout:write(string.format("\n----------- Please specify the filename to load | Insert 'cancel' to end operation -----------\n\n"))
+        io.stdout:write(string.format("Filename: ")); filename = io.stdin:read()
+        if filename == 'cancel' then return end
+        file = io.open(filename, "r")
+    until file ~= nil
+
+    io.stdout:write(string.format("\nLoading from file '%s'...", filename))
+    sleep(1)
     local str = file:read("*all")
     local players = {}
     local npcs = {}
@@ -99,8 +130,10 @@ function RPGInitiativeMenu.loadAll()
             totalIDs = totalIDs + 1
         end
     end
-
     file:close()
+
+    io.stdout:write(string.format("\nSuccessfully loaded from file '%s'!", filename))
+    sleep(1)
     return players, npcs, totalIDs
 end
 
